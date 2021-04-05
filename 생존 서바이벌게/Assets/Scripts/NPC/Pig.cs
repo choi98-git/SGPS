@@ -34,6 +34,8 @@ public class Pig : MonoBehaviour
     [SerializeField] private AudioClip sound_pig_Hurt;
     [SerializeField] private AudioClip sound_pig_Dead;
 
+
+
     // Start is called before the first frame update
     void Start()
     {

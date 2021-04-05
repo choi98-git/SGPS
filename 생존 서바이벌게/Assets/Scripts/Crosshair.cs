@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Crosshair : MonoBehaviour
 {
+
+    public LayerMask targetMask;
+    public SpriteRenderer dot;
+    public Color Enemydot;
+
     [SerializeField]
     private Animator animator;
 
@@ -35,6 +40,7 @@ public class Crosshair : MonoBehaviour
     {
         animator.SetBool("FineSight", _flag);
     }
+    
 
     public void FireAnimation()
     {
@@ -65,5 +71,10 @@ public class Crosshair : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void SearchTarget()
+    {
+        ;
     }
 }

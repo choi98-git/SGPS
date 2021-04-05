@@ -16,6 +16,8 @@ public class GunController : MonoBehaviour
     [HideInInspector]
     public bool isFineSightMode = false;
 
+    public bool isEnemy = false;
+
     // 본래 포지션 값
     private Vector3 originPos;
 
@@ -36,11 +38,16 @@ public class GunController : MonoBehaviour
     [SerializeField]
     private GameObject hit_effect_prefab;
 
+    private StatusHP thestatusHP;
+    private MonsterHp1 monsterHp1;
+
     private void Start()
     {
         originPos = Vector3.zero;
         audioSource = GetComponent<AudioSource>();
         theCrosshair = FindObjectOfType<Crosshair>();
+        thestatusHP = FindObjectOfType<StatusHP>();
+        monsterHp1 = FindObjectOfType<MonsterHp1>();
     }
 
     // Update is called once per frame
@@ -50,6 +57,7 @@ public class GunController : MonoBehaviour
         TryFire();
         TryReload();
         TryFineSight();
+        
     }
 
     private void GunFireRateCalc() // 연사속도 재계산
@@ -89,7 +97,11 @@ public class GunController : MonoBehaviour
         currentGun.muzzleFlash.Play();
         Hit();
         if (hitInfo.transform.tag == "NPC")
+        {
             hitInfo.transform.GetComponent<Pig>().Damage(1, transform.position);
+            monsterHp1.DecreaseHP(1);
+
+        }
         StopAllCoroutines();
         StartCoroutine(RetroActionCoroutine());
     }
@@ -161,6 +173,9 @@ public class GunController : MonoBehaviour
         if (isFineSightMode)
             FineSight();
     }
+
+
+
 
     private void FineSight() // 정조준 가동
     {
@@ -239,6 +254,8 @@ public class GunController : MonoBehaviour
             }
         }
     }
+
+
 
     private void PlaySE(AudioClip _clip) // 사운드 재생
     {

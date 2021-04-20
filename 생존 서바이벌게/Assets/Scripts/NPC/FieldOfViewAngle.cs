@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class FieldOfViewAngle : MonoBehaviour
 {
@@ -10,31 +11,23 @@ public class FieldOfViewAngle : MonoBehaviour
     [SerializeField] private LayerMask targetMask; // 타겟 마스크 (플레이어)
 
     private Pig thePig;
+    private PlayerController thePlayer;
+    private NavMeshAgent nav;
 
     private void Start()
     {
+        thePlayer = FindObjectOfType<PlayerController>();
         thePig = GetComponent<Pig>();
+        nav = GetComponent<NavMeshAgent>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public Vector3 GetTargetPos()
     {
-        View();
+        return thePlayer.transform.position;
     }
 
-    private Vector3 BoundaryAngle(float _angle)
+    public bool View()
     {
-        _angle += transform.eulerAngles.y;
-        return new Vector3(Mathf.Sin(_angle * Mathf.Deg2Rad), 0f, Mathf.Cos(_angle * Mathf.Deg2Rad));
-    }
-
-    private void View()
-    {
-        Vector3 _leftBoundary = BoundaryAngle(-viewAngle * 0.5f);
-        Vector3 _rightBoundary = BoundaryAngle(viewAngle * 0.5f);
-
-        Debug.DrawRay(transform.position + transform.up, _leftBoundary, Color.red);
-        Debug.DrawRay(transform.position + transform.up, _rightBoundary, Color.red);
 
         Collider[] _target = Physics.OverlapSphere(transform.position, viewDistance, targetMask);
 
@@ -55,11 +48,40 @@ public class FieldOfViewAngle : MonoBehaviour
                         {
                             Debug.Log("플레이어가 돼지 시야 내에 있습니다.");
                             Debug.DrawRay(transform.position + transform.up, _direction, Color.blue);
-                            thePig.Run(_hit.transform.position);
+                            return true;
                         }                     
                     }
                 }
             }
+            if(thePlayer.GetRun())
+            {
+                if(CalcPathLength(thePlayer.transform.position) <= viewDistance)
+                {
+                    Debug.Log("플레이어의 움직임 감지!");
+                    return true;
+                }
+            }
         }
+        return false;
+    }
+
+    private float CalcPathLength(Vector3 _targetPos)
+    {
+        NavMeshPath _path = new NavMeshPath();
+        nav.CalculatePath(_targetPos, _path);
+
+        Vector3[] _wayPoint = new Vector3[_path.corners.Length + 2];
+
+        _wayPoint[0] = transform.position;
+        _wayPoint[_path.corners.Length + 1] = _targetPos;
+
+        float _pathLength = 0;
+        for(int i = 0; i< _path.corners.Length; i++)
+        {
+            _wayPoint[i + 1] = _path.corners[i];
+            _pathLength += Vector3.Distance(_wayPoint[i], _wayPoint[i + 1]); // 경로 길이 계산
+        }
+
+        return _pathLength;
     }
 }

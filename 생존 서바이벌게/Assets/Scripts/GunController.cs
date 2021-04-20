@@ -40,6 +40,7 @@ public class GunController : MonoBehaviour
 
     private StatusHP thestatusHP;
     private MonsterHp1 monsterHp1;
+    private Pig1 thepig1;
 
     private void Start()
     {
@@ -48,16 +49,20 @@ public class GunController : MonoBehaviour
         theCrosshair = FindObjectOfType<Crosshair>();
         thestatusHP = FindObjectOfType<StatusHP>();
         monsterHp1 = FindObjectOfType<MonsterHp1>();
+        thepig1 = FindObjectOfType<Pig1>();
     }
 
     // Update is called once per frame
     void Update()
     {
         GunFireRateCalc();
-        TryFire();
-        TryReload();
-        TryFineSight();
-        
+        if (!Inventory.inventoryActivated)
+        {
+            TryFire();
+            TryReload();
+            TryFineSight();
+        }
+
     }
 
     private void GunFireRateCalc() // 연사속도 재계산
@@ -96,11 +101,18 @@ public class GunController : MonoBehaviour
         PlaySE(currentGun.fire_Sound);
         currentGun.muzzleFlash.Play();
         Hit();
-        if (hitInfo.transform.tag == "NPC")
+        if (hitInfo.transform.tag == "WeakCr")
         {
-            hitInfo.transform.GetComponent<Pig>().Damage(1, transform.position);
+            hitInfo.transform.GetComponent<Weak>().Damage(1, transform.position);
             monsterHp1.DecreaseHP(1);
-
+        }
+        else if(hitInfo.transform.tag == "Danger")
+        {
+            hitInfo.transform.GetComponent<Weak>().Damage(1, transform.position);
+        }
+        else if (hitInfo.transform.tag == "NPC")
+        {
+            hitInfo.transform.GetComponent<Pig1>().Damage(1, transform.position);
         }
         StopAllCoroutines();
         StartCoroutine(RetroActionCoroutine());

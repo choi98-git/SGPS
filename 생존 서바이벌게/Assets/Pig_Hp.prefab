@@ -193,9 +193,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 8
+  m_MaxValue: 3
   m_WholeNumbers: 0
-  m_Value: 8
+  m_Value: 3
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -212,8 +212,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Pig_Hpbar: {fileID: 7735833548572779564}
-  maxHp: 8
-  currentHP: 8
+  maxHp: 3
+  currentHP: 3
 --- !u!1 &8847180234379703219
 GameObject:
   m_ObjectHideFlags: 0

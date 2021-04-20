@@ -84,8 +84,11 @@ public class PlayerController : MonoBehaviour
         TryCrouch();
         Move();
         MoveCheck();
-        CameraRotation();
-        CharacterRotation();
+        if (!Inventory.inventoryActivated)
+        {
+            CameraRotation();
+            CharacterRotation();
+        }      
     }
 
     private void TryCrouch() // 앉기 시도
@@ -96,6 +99,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public bool GetRun()
+
+    {
+
+        return isRun;
+
+    }
     private void Crouch() // 앉기 동작
     {
         isCrouch = !isCrouch;
@@ -234,4 +244,5 @@ public class PlayerController : MonoBehaviour
 
         theCamera.transform.localEulerAngles = new Vector3(currentCameraRotationX, 0f, 0f);
     }
+
 }

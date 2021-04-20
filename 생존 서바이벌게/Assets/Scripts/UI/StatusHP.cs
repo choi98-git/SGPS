@@ -7,6 +7,7 @@ public class StatusHP : MonoBehaviour
 {
 
     public Slider HPbar;
+    
 
     //체력
     [SerializeField]
